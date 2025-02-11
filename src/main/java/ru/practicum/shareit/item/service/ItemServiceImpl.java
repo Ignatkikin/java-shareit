@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.AccessDeniedException;
 import ru.practicum.shareit.item.ItemMapper;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
@@ -39,6 +40,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto updateItem(Long userId, Long itemId, ItemDto newItemDto) {
         userStorage.checkIfUserExists(userId);
         itemStorage.checkIfItemExists(itemId);
+        checkOwner(userId, itemId);
         Item item = ItemMapper.toItem(newItemDto);
         item.setId(itemId);
         item.setOwnerId(userId);
@@ -66,5 +68,13 @@ public class ItemServiceImpl implements ItemService {
         return itemStorage.getItemsByText(text).stream()
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList());
+    }
+
+    private void checkOwner(long userId, long itemId) {
+        Item item = itemStorage.getItemById(itemId);
+        if (!item.getOwnerId().equals(userId)) {
+            log.warn("Доступ запрещен: User с id {} не владеет Item с id {}", userId, itemId);
+            throw new AccessDeniedException("Доступ запрещен: User c id " + userId + " не владеет Item с id " + itemId);
+        }
     }
 }

@@ -19,4 +19,10 @@ public class ErrorHandler {
     public ErrorResponse handleEmailValidationException(final EmailValidationException e) {
         return new ErrorResponse("Email уже существует", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handleAccessDeniedException(final AccessDeniedException e) {
+        return new ErrorResponse("Доступ запрещен:", e.getMessage());
+    }
 }
