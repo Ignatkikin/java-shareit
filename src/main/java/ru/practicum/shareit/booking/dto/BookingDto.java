@@ -18,6 +18,6 @@ public class BookingDto {
     private LocalDateTime start;
     private LocalDateTime end;
     private ItemDto item;
-    private UserDto bookers;
+    private UserDto booker;
     private BookingStatus status;
 }
