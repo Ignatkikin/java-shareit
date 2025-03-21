@@ -42,20 +42,19 @@ public class BookingController {
     @GetMapping
     public ResponseEntity<Object> getAllBookingsByUserId(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                          @RequestParam(defaultValue = "ALL") String state,
-                                                         @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                         @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                                         @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                                         @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Запрос на получение списка всех бронирований текущего пользователя с id {}", userId);
         State stateEnum = State.from(state)
                 .orElseThrow(() -> new ValidationException("Неизвестный state: " + state));
-        //State stateEnum = State.fromString(state.toUpperCase());
         return bookingClient.getAllBookingsByUserId(userId, stateEnum, from, size);
     }
 
     @GetMapping("/owner")
     public ResponseEntity<Object> getBookingsByOwnerId(@RequestHeader("X-Sharer-User-Id") Long userId,
                                                        @RequestParam(defaultValue = "ALL") String state,
-                                                       @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                       @Positive @RequestParam(name = "size", defaultValue = "10") Integer size) {
+                                                       @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
+                                                       @Positive @RequestParam(defaultValue = "10") Integer size) {
         log.info("Запрос на Получение списка бронирований для всех вещей текущего пользователя с id {}", userId);
         State stateEnum = State.from(state)
                 .orElseThrow(() -> new ValidationException("Неизвестный state: " + state));
